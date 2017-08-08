@@ -1,7 +1,7 @@
 # Личный проект «Кексобукинг» [![Build status][travis-image]][travis-url]
 
 * Студент: [Денис Васильев](https://up.htmlacademy.ru/javascript/10/user/17030).
-* Наставник: `Неизвестно`.
+* Наставник: [Андрей Фатюк](https://htmlacademy.ru/profile/id109897).
 
 ---
 
