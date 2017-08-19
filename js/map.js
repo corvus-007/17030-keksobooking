@@ -76,19 +76,13 @@ var ads = createArrayAds(ADS_COUNT);
 
 var generatePinElement = function (ad) {
   var pinElement = document.createElement('div');
-  var pinImageElement = document.createElement('img');
+  var pinImageElement = '<img src="' + ad.author.avatar + '" class="rounded" width="40" height="40">';
   var PIN_WIDTH = 56;
   var PIN_HEIGHT = 75;
 
   pinElement.className = 'pin';
   pinElement.setAttribute('style', 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;');
-
-  pinImageElement.src = ad.author.avatar;
-  pinImageElement.className = 'rounded';
-  pinImageElement.width = 40;
-  pinImageElement.height = 40;
-
-  pinElement.appendChild(pinImageElement);
+  pinElement.insertAdjacentHTML('beforeend', pinImageElement);
 
   return pinElement;
 };
