@@ -2,8 +2,7 @@
 
 (function () {
   var init = function () {
-    var offerDialog = document.querySelector('#offer-dialog');
-    var offerMockData = {
+    var OFFER_MOCK_DATA = {
       TITLES: [
         'Большая уютная квартира',
         'Маленькая неуютная квартира',
@@ -20,12 +19,13 @@
       FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']
     };
     var ADS_COUNT = 8;
-    var ads = generateAdsArray(offerMockData, ADS_COUNT);
+
+    var offerDialog = document.querySelector('#offer-dialog');
+    var ads = generateAdsArray(OFFER_MOCK_DATA, ADS_COUNT);
 
     document.querySelector('.tokyo__pin-map').appendChild(generatePins(ads));
     renderOfferDialog(offerDialog, ads);
   };
-
 
   var getRandomFromRange = function (min, max) {
     return Math.floor(Math.random() * (max + 1 - min) + min);
