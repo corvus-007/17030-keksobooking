@@ -39,12 +39,12 @@
     return array.slice(getRandomFromRange(0, array.length - 1));
   };
 
-  var generateAdsArray = function (data, countAds) {
+  var generateAdsArray = function (data, adsCount) {
     var arr = [];
     var offerLocationX = null;
     var offerLocationY = null;
 
-    for (var i = 1; i <= countAds; i++) {
+    for (var i = 1; i <= adsCount; i++) {
       offerLocationX = getRandomFromRange(300, 900);
       offerLocationY = getRandomFromRange(100, 500);
 
