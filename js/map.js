@@ -4,7 +4,7 @@
   var init = function () {
     var offerDialog = document.querySelector('#offer-dialog');
     var offerMockData = {
-      OFFER_TITLES: [
+      TITLES: [
         'Большая уютная квартира',
         'Маленькая неуютная квартира',
         'Огромный прекрасный дворец',
@@ -14,10 +14,10 @@
         'Уютное бунгало далеко от моря',
         'Неуютное бунгало по колено в воде'
       ],
-      OFFER_TYPE: ['flat', 'house', 'bungalo'],
-      OFFER_CHECKIN: ['12:00', '13:00', '14:00'],
-      OFFER_CHECKOUT: ['12:00', '13:00', '14:00'],
-      OFFER_FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']
+      TYPES: ['flat', 'house', 'bungalo'],
+      CHECKIN: ['12:00', '13:00', '14:00'],
+      CHECKOUT: ['12:00', '13:00', '14:00'],
+      FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']
     };
     var ADS_COUNT = 8;
     var ads = generateAdsArray(offerMockData, ADS_COUNT);
@@ -53,15 +53,15 @@
           avatar: 'img/avatars/user0' + i + '.png'
         },
         offer: {
-          title: data.OFFER_TITLES[i - 1],
+          title: data.TITLES[i - 1],
           address: offerLocationX + ', ' + offerLocationY,
           price: getRandomFromRange(1000, 1000000),
-          type: getRandomItem(data.OFFER_TYPE),
+          type: getRandomItem(data.TYPES),
           rooms: getRandomFromRange(1, 5),
           guests: getRandomFromRange(1, 8),
-          checkin: getRandomItem(data.OFFER_CHECKIN),
-          checkout: getRandomItem(data.OFFER_CHECKOUT),
-          features: sliceRandomItems(data.OFFER_FEATURES),
+          checkin: getRandomItem(data.CHECKIN),
+          checkout: getRandomItem(data.CHECKOUT),
+          features: sliceRandomItems(data.FEATURES),
           description: '',
           photos: []
         },
