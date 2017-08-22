@@ -1,143 +1,155 @@
 'use strict';
 
-var offerDialog = document.querySelector('#offer-dialog');
-var lodgeTemplate = document.querySelector('#lodge-template').content;
-var OFFER_TITLES = [
-  'Большая уютная квартира',
-  'Маленькая неуютная квартира',
-  'Огромный прекрасный дворец',
-  'Маленький ужасный дворец',
-  'Красивый гостевой домик',
-  'Некрасивый негостеприимный домик',
-  'Уютное бунгало далеко от моря',
-  'Неуютное бунгало по колено в воде'
-];
-var OFFER_TYPE = ['flat', 'house', 'bungalo'];
-var OFFER_CHECKIN = ['12:00', '13:00', '14:00'];
-var OFFER_CHECKOUT = ['12:00', '13:00', '14:00'];
-var OFFER_FEATURES = ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner'];
-var ADS_COUNT = 8;
-var i = null;
-
-var getRandomFromRange = function (min, max) {
-  return Math.floor(Math.random() * (max + 1 - min) + min);
-};
-
-function createArrayAds(countAds) {
-  var arr = [];
-  var objectAd = null;
-  var offerTitle = null;
-  var offerType = null;
-  var offerCheckin = null;
-  var offerCheckout = null;
-  var offerFeatures = null;
-  var offerLocationX = null;
-  var offerLocationY = null;
-
-  for (i = 1; i <= countAds; i++) {
-    offerTitle = OFFER_TITLES[i - 1];
-    offerType = OFFER_TYPE[getRandomFromRange(0, OFFER_TYPE.length - 1)];
-    offerCheckin = OFFER_CHECKIN[getRandomFromRange(0, OFFER_CHECKIN.length - 1)];
-    offerCheckout = OFFER_CHECKOUT[getRandomFromRange(0, OFFER_CHECKOUT.length - 1)];
-    offerFeatures = OFFER_FEATURES.slice(getRandomFromRange(0, OFFER_FEATURES.length - 1));
-    offerLocationX = getRandomFromRange(300, 900);
-    offerLocationY = getRandomFromRange(100, 500);
-
-    objectAd = {
-      author: {
-        avatar: 'img/avatars/user0' + i + '.png'
-      },
-      offer: {
-        title: offerTitle,
-        address: offerLocationX + ', ' + offerLocationY,
-        price: getRandomFromRange(1000, 1000000),
-        type: offerType,
-        rooms: getRandomFromRange(1, 5),
-        guests: getRandomFromRange(1, 8),
-        checkin: offerCheckin,
-        checkout: offerCheckout,
-        features: offerFeatures,
-        description: '',
-        photos: []
-      },
-      location: {
-        x: offerLocationX,
-        y: offerLocationY
-      }
+(function () {
+  var init = function () {
+    var offerDialog = document.querySelector('#offer-dialog');
+    var offerMockData = {
+      OFFER_TITLES: [
+        'Большая уютная квартира',
+        'Маленькая неуютная квартира',
+        'Огромный прекрасный дворец',
+        'Маленький ужасный дворец',
+        'Красивый гостевой домик',
+        'Некрасивый негостеприимный домик',
+        'Уютное бунгало далеко от моря',
+        'Неуютное бунгало по колено в воде'
+      ],
+      OFFER_TYPE: ['flat', 'house', 'bungalo'],
+      OFFER_CHECKIN: ['12:00', '13:00', '14:00'],
+      OFFER_CHECKOUT: ['12:00', '13:00', '14:00'],
+      OFFER_FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']
     };
+    var ADS_COUNT = 8;
+    var ads = generateAdsArray(offerMockData, ADS_COUNT);
 
-    arr.push(objectAd);
-  }
+    document.querySelector('.tokyo__pin-map').appendChild(generatePins(ads));
+    renderOfferDialog(offerDialog, ads);
+  };
 
-  return arr;
-}
 
-var ads = createArrayAds(ADS_COUNT);
+  var getRandomFromRange = function (min, max) {
+    return Math.floor(Math.random() * (max + 1 - min) + min);
+  };
 
-var generatePinElement = function (ad) {
-  var pinElement = document.createElement('div');
-  var pinImageElement = '<img src="' + ad.author.avatar + '" class="rounded" width="40" height="40">';
-  var PIN_WIDTH = 56;
-  var PIN_HEIGHT = 75;
+  var getRandomItem = function (array) {
+    return array[getRandomFromRange(0, array.length - 1)];
+  };
 
-  pinElement.className = 'pin';
-  pinElement.setAttribute('style', 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;');
-  pinElement.insertAdjacentHTML('beforeend', pinImageElement);
+  var sliceRandomItems = function (array) {
+    return array.slice(getRandomFromRange(0, array.length - 1));
+  };
 
-  return pinElement;
-};
+  var generateAdsArray = function (data, countAds) {
+    var arr = [];
+    var offerLocationX = null;
+    var offerLocationY = null;
 
-var generatePins = function () {
-  var pinsFragment = document.createDocumentFragment();
+    for (var i = 1; i <= countAds; i++) {
+      offerLocationX = getRandomFromRange(300, 900);
+      offerLocationY = getRandomFromRange(100, 500);
 
-  for (i = 0; i < ads.length; i++) {
-    pinsFragment.appendChild(generatePinElement(ads[i]));
-  }
+      arr.push({
+        author: {
+          avatar: 'img/avatars/user0' + i + '.png'
+        },
+        offer: {
+          title: data.OFFER_TITLES[i - 1],
+          address: offerLocationX + ', ' + offerLocationY,
+          price: getRandomFromRange(1000, 1000000),
+          type: getRandomItem(data.OFFER_TYPE),
+          rooms: getRandomFromRange(1, 5),
+          guests: getRandomFromRange(1, 8),
+          checkin: getRandomItem(data.OFFER_CHECKIN),
+          checkout: getRandomItem(data.OFFER_CHECKOUT),
+          features: sliceRandomItems(data.OFFER_FEATURES),
+          description: '',
+          photos: []
+        },
+        location: {
+          x: offerLocationX,
+          y: offerLocationY
+        }
+      });
+    }
 
-  return pinsFragment;
-};
+    return arr;
+  };
 
-document.querySelector('.tokyo__pin-map').appendChild(generatePins());
+  var generatePinElement = function (ad) {
+    var pinElement = document.createElement('div');
+    var pinImageElement = '<img src="' + ad.author.avatar + '" class="rounded" width="40" height="40">';
+    var PIN_WIDTH = 56;
+    var PIN_HEIGHT = 75;
 
-var renderFeatures = function (features) {
-  var featuresFragment = document.createDocumentFragment();
-  var featuresElement = null;
+    pinElement.className = 'pin';
+    pinElement.setAttribute('style', 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;');
+    pinElement.insertAdjacentHTML('beforeend', pinImageElement);
 
-  for (i = 0; i < features.length; i++) {
-    featuresElement = document.createElement('span');
-    featuresElement.className = 'feature__image feature__image--' + features[i];
-    featuresFragment.appendChild(featuresElement);
-  }
+    return pinElement;
+  };
 
-  return featuresFragment;
-};
+  var generatePins = function (adsArray) {
+    var pinsFragment = document.createDocumentFragment();
 
-var generateLodgeElement = function (ad) {
-  var lodgeElement = lodgeTemplate.cloneNode(true);
-  var offerType = null;
+    for (var i = 0; i < adsArray.length; i++) {
+      pinsFragment.appendChild(generatePinElement(adsArray[i]));
+    }
 
-  if (ad.offer.type === 'flat') {
-    offerType = 'Квартира';
-  } else if (ad.offer.type === 'bungalo') {
-    offerType = 'Бунгало';
-  } else if (ad.offer.type === 'house') { // Можно заменить `else if` на `else` эту конструкцию заменить на 'switch case'?
-    offerType = 'Дом';
-  }
+    return pinsFragment;
+  };
 
-  lodgeElement.querySelector('.lodge__title').textContent = ad.offer.title;
-  lodgeElement.querySelector('.lodge__address').textContent = ad.offer.address;
-  lodgeElement.querySelector('.lodge__price').innerHTML = ad.offer.price + ' &#x20bd;/ночь';
-  lodgeElement.querySelector('.lodge__type ').textContent = offerType;
-  lodgeElement.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + ad.offer.guests + ' гостей в ' + ad.offer.rooms + ' комнатах';
-  lodgeElement.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
-  lodgeElement.querySelector('.lodge__features').appendChild(renderFeatures(ad.offer.features));
-  lodgeElement.querySelector('.lodge__description').textContent = ad.offer.description;
-  lodgeElement.querySelector('.lodge__description').textContent = ad.offer.description;
+  var generateFeatures = function (features) {
+    var featuresFragment = document.createDocumentFragment();
+    var featuresElement = null;
 
-  // offerDialog.querySelector('.dialog__title > img').src = ad.author.avatar;
+    for (var i = 0; i < features.length; i++) {
+      featuresElement = document.createElement('span');
+      featuresElement.className = 'feature__image feature__image--' + features[i];
+      featuresFragment.appendChild(featuresElement);
+    }
 
-  return lodgeElement;
-};
+    return featuresFragment;
+  };
 
-offerDialog.replaceChild(generateLodgeElement(ads[0]), offerDialog.querySelector('.dialog__panel'));
-offerDialog.querySelector('.dialog__title > img').src = ads[0].author.avatar; // Не знаю, можно ли эту строку перенести в функцию `generateLodgeElement`
+  var getOfferType = function (type) {
+    var offerType = null;
+
+    switch (type) {
+      case 'flat':
+        offerType = 'Квартира';
+        break;
+      case 'bungalo':
+        offerType = 'Бунгало';
+        break;
+      case 'house':
+        offerType = 'Дом';
+        break;
+    }
+
+    return offerType;
+  };
+
+  var renderOfferDialog = function (offerContainer, adsArray) {
+    offerContainer.replaceChild(generateLodgeElement(adsArray[0]), offerContainer.querySelector('.dialog__panel'));
+    offerContainer.querySelector('.dialog__title > img').src = adsArray[0].author.avatar;
+  };
+
+  var generateLodgeElement = function (ad) {
+    var lodgeTemplate = document.querySelector('#lodge-template').content;
+    var lodgeElement = lodgeTemplate.cloneNode(true);
+
+    lodgeElement.querySelector('.lodge__title').textContent = ad.offer.title;
+    lodgeElement.querySelector('.lodge__address').textContent = ad.offer.address;
+    lodgeElement.querySelector('.lodge__price').textContent = ad.offer.price + ' ₽/ночь';
+    lodgeElement.querySelector('.lodge__type ').textContent = getOfferType(ad.offer.type);
+    lodgeElement.querySelector('.lodge__rooms-and-guests').textContent = 'Для ' + ad.offer.guests + ' гостей в ' + ad.offer.rooms + ' комнатах';
+    lodgeElement.querySelector('.lodge__checkin-time').textContent = 'Заезд после ' + ad.offer.checkin + ', выезд до ' + ad.offer.checkout;
+    lodgeElement.querySelector('.lodge__features').appendChild(generateFeatures(ad.offer.features));
+    lodgeElement.querySelector('.lodge__description').textContent = ad.offer.description;
+    lodgeElement.querySelector('.lodge__description').textContent = ad.offer.description;
+
+    return lodgeElement;
+  };
+
+  init();
+})();
