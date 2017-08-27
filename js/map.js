@@ -42,23 +42,35 @@
     };
 
     var closeDialog = function () {
+      var activePin = document.querySelector('.pin--active');
+
+      if (activePin) {
+        activePin.classList.remove('pin--active');
+      }
+
       dialog.hidden = true;
-      document.querySelector('.pin--active').classList.remove('pin--active');
       document.removeEventListener('keydown', onDialogEscPress);
     };
 
     var toggleActivePin = function (event) {
-      var element = event.target;
-      var pins = tokioPinMap.querySelectorAll('.pin:not(.pin__main)');
+      var targetElement = event.target;
 
-      for (var i = 0; i < pins.length; i++) {
-        pins[i].classList.remove('pin--active');
+      while (targetElement !== tokioPinMap) {
+        if (targetElement.classList.contains('pin')) {
+          var pins = tokioPinMap.querySelectorAll('.pin:not(.pin__main)');
 
-        if (pins[i] === element) {
-          element.classList.add('pin--active');
-          renderOfferDialog(dialog, ads[i]);
-          openDialog();
+          for (var i = 0; i < pins.length; i++) {
+            pins[i].classList.remove('pin--active');
+
+            if (pins[i] === targetElement) {
+              targetElement.classList.add('pin--active');
+              renderOfferDialog(dialog, ads[i]);
+              openDialog();
+            }
+          }
+          return;
         }
+        targetElement = targetElement.parentNode;
       }
     };
 
