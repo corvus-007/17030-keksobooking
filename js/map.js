@@ -3,7 +3,7 @@
 (function () {
   var init = function () {
     var OFFER_MOCK_DATA = {
-      TITLES: [
+      titles: [
         'Большая уютная квартира',
         'Маленькая неуютная квартира',
         'Огромный прекрасный дворец',
@@ -13,18 +13,84 @@
         'Уютное бунгало далеко от моря',
         'Неуютное бунгало по колено в воде'
       ],
-      TYPES: ['flat', 'house', 'bungalo'],
-      CHECKIN: ['12:00', '13:00', '14:00'],
-      CHECKOUT: ['12:00', '13:00', '14:00'],
-      FEATURES: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']
+      types: ['flat', 'house', 'bungalo'],
+      checkin: ['12:00', '13:00', '14:00'],
+      checkout: ['12:00', '13:00', '14:00'],
+      features: ['wifi', 'dishwasher', 'parking', 'washer', 'elevator', 'conditioner']
     };
     var ADS_COUNT = 8;
+    var KEYCODES = {
+      enter: 13,
+      esc: 27
+    };
 
-    var offerDialog = document.querySelector('#offer-dialog');
+    var tokioPinMap = document.querySelector('.tokyo__pin-map');
+
+    var dialog = document.querySelector('#offer-dialog');
+    var dialogClose = dialog.querySelector('.dialog__close');
     var ads = generateAdsArray(OFFER_MOCK_DATA, ADS_COUNT);
 
-    document.querySelector('.tokyo__pin-map').appendChild(generatePins(ads));
-    renderOfferDialog(offerDialog, ads);
+    var onDialogEscPress = function (event) {
+      if (event.keyCode === KEYCODES.esc) {
+        closeDialog();
+      }
+    };
+
+    var openDialog = function () {
+      dialog.hidden = false;
+      document.addEventListener('keydown', onDialogEscPress);
+    };
+
+    var closeDialog = function () {
+      var activePin = document.querySelector('.pin--active');
+
+      if (activePin) {
+        activePin.classList.remove('pin--active');
+      }
+
+      dialog.hidden = true;
+      document.removeEventListener('keydown', onDialogEscPress);
+    };
+
+    var toggleActivePin = function (event) {
+      var targetElement = event.target;
+
+      while (targetElement !== tokioPinMap) {
+        if (targetElement.classList.contains('pin')) {
+          var pins = tokioPinMap.querySelectorAll('.pin:not(.pin__main)');
+
+          for (var i = 0; i < pins.length; i++) {
+            pins[i].classList.remove('pin--active');
+
+            if (pins[i] === targetElement) {
+              targetElement.classList.add('pin--active');
+              renderOfferDialog(dialog, ads[i]);
+              openDialog();
+            }
+          }
+          return;
+        }
+        targetElement = targetElement.parentNode;
+      }
+    };
+
+    tokioPinMap.appendChild(generatePins(ads));
+    renderOfferDialog(dialog, ads[0]);
+
+    tokioPinMap.addEventListener('click', function (event) {
+      toggleActivePin(event);
+    });
+
+    tokioPinMap.addEventListener('keydown', function (event) {
+      if (event.keyCode === KEYCODES.enter) {
+        toggleActivePin(event);
+      }
+    });
+
+    dialogClose.addEventListener('click', function (event) {
+      event.preventDefault();
+      closeDialog();
+    });
   };
 
   var getRandomFromRange = function (min, max) {
@@ -53,15 +119,15 @@
           avatar: 'img/avatars/user0' + i + '.png'
         },
         offer: {
-          title: data.TITLES[i - 1],
+          title: data.titles[i - 1],
           address: offerLocationX + ', ' + offerLocationY,
           price: getRandomFromRange(1000, 1000000),
-          type: getRandomItem(data.TYPES),
+          type: getRandomItem(data.types),
           rooms: getRandomFromRange(1, 5),
           guests: getRandomFromRange(1, 8),
-          checkin: getRandomItem(data.CHECKIN),
-          checkout: getRandomItem(data.CHECKOUT),
-          features: sliceRandomItems(data.FEATURES),
+          checkin: getRandomItem(data.checkin),
+          checkout: getRandomItem(data.checkout),
+          features: sliceRandomItems(data.features),
           description: '',
           photos: []
         },
@@ -82,6 +148,7 @@
     var PIN_HEIGHT = 75;
 
     pinElement.className = 'pin';
+    pinElement.tabIndex = 0;
     pinElement.setAttribute('style', 'left: ' + (ad.location.x - PIN_WIDTH / 2) + 'px; top: ' + (ad.location.y - PIN_HEIGHT) + 'px;');
     pinElement.insertAdjacentHTML('beforeend', pinImageElement);
 
@@ -129,9 +196,9 @@
     return offerType;
   };
 
-  var renderOfferDialog = function (offerContainer, adsArray) {
-    offerContainer.replaceChild(generateLodgeElement(adsArray[0]), offerContainer.querySelector('.dialog__panel'));
-    offerContainer.querySelector('.dialog__title > img').src = adsArray[0].author.avatar;
+  var renderOfferDialog = function (offerContainer, ad) {
+    offerContainer.replaceChild(generateLodgeElement(ad), offerContainer.querySelector('.dialog__panel'));
+    offerContainer.querySelector('.dialog__title > img').src = ad.author.avatar;
   };
 
   var generateLodgeElement = function (ad) {
