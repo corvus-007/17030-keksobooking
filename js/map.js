@@ -23,24 +23,37 @@
       enter: 13,
       esc: 27
     };
+    var CAPACITY_NUMBERS = {
+      1: ['1'],
+      2: ['1', '2'],
+      3: ['1', '2', '3'],
+      100: ['0']
+    };
 
     var tokioPinMap = document.querySelector('.tokyo__pin-map');
-
     var dialog = document.querySelector('#offer-dialog');
     var dialogClose = dialog.querySelector('.dialog__close');
     var ads = generateAdsArray(OFFER_MOCK_DATA, ADS_COUNT);
+    var noticeForm = document.querySelector('.notice__form');
+    var noticeTimein = noticeForm.elements.timein;
+    var noticeTimeout = noticeForm.elements.timeout;
+    var noticeType = noticeForm.elements.type;
+    var noticePrice = noticeForm.elements.price;
+    var noticeRooms = noticeForm.elements.rooms;
+    var noticeCapacity = noticeForm.elements.capacity;
 
+    var adjustTimeValue = function (adjacentElement, value) {
+      adjacentElement.selectedIndex = value;
+    };
     var onDialogEscPress = function (event) {
       if (event.keyCode === KEYCODES.esc) {
         closeDialog();
       }
     };
-
     var openDialog = function () {
       dialog.hidden = false;
       document.addEventListener('keydown', onDialogEscPress);
     };
-
     var closeDialog = function () {
       var activePin = document.querySelector('.pin--active');
 
@@ -51,7 +64,6 @@
       dialog.hidden = true;
       document.removeEventListener('keydown', onDialogEscPress);
     };
-
     var toggleActivePin = function (event) {
       var targetElement = event.target;
 
@@ -73,6 +85,202 @@
         targetElement = targetElement.parentNode;
       }
     };
+    var checkFormValitidy = function (form) {
+      var element = null;
+
+      for (var i = 0; i < form.elements.length; i++) {
+        element = form.elements[i];
+        if (!element.checkValidity()) {
+          element.style.borderColor = 'red';
+        } else {
+          element.style = '';
+        }
+      }
+    };
+    var setSelected = function (select, value) {
+      for (var i = 0; i < select.options.length; i++) {
+        if (select.options[i].value.toString(10) === value.toString(10)) {
+          select.options[i].selected = true;
+          break;
+        }
+      }
+    };
+    var checkFormFields = function (form) {
+      for (var i = 0; i < form.elements.length; i++) {
+        (function (element) {
+          element.addEventListener('input', function (event) {
+            var field = event.target;
+
+            if (!field.validity.valid) {
+              field.style.borderColor = 'red';
+            } else {
+              field.style = '';
+            }
+          });
+        })(form.elements[i]);
+      }
+    };
+
+    checkFormFields(noticeForm);
+
+    noticeTimein.addEventListener('change', function (event) {
+      adjustTimeValue(noticeTimeout, event.target.selectedIndex);
+    });
+    noticeTimeout.addEventListener('change', function (event) {
+      adjustTimeValue(noticeTimein, event.target.selectedIndex);
+    });
+    noticeType.addEventListener('change', function (event) {
+      var selectedValue = event.target.value;
+
+      switch (selectedValue) {
+        case 'bungalo':
+          noticePrice.value = 0;
+          break;
+        case 'flat':
+          noticePrice.value = 1000;
+          break;
+        case 'house':
+          noticePrice.value = 5000;
+          break;
+        case 'palace':
+          noticePrice.value = 10000;
+          break;
+      }
+    });
+
+    noticePrice.addEventListener('input', function () {
+      var priceValue = event.target.value;
+
+      if (priceValue >= 10000) {
+        setSelected(noticeType, 'palace');
+      } else if (priceValue >= 5000) {
+        setSelected(noticeType, 'house');
+      } else if (priceValue >= 1000) {
+        setSelected(noticeType, 'flat');
+      } else if (priceValue >= 0) {
+        setSelected(noticeType, 'bungalo');
+      }
+    });
+
+    // noticeRooms.addEventListener('change', function (event) {
+    //   var roomsValue = event.target.value;
+
+    //   switch (roomsValue) {
+    //     case '1':
+    //       setSelected(noticeCapacity, 1);
+    //       break;
+    //     case '2':
+    //       setSelected(noticeCapacity, 2);
+    //       break;
+    //     case '3':
+    //       setSelected(noticeCapacity, 3);
+    //       break;
+    //     case '100':
+    //       setSelected(noticeCapacity, 0);
+    //       break;
+    //   }
+    // });
+
+    // noticeCapacity.addEventListener('change', function (event) {
+    //   var capacityValue = event.target.value;
+
+    //   switch (capacityValue) {
+    //     case '0':
+    //       setSelected(noticeRooms, 100);
+    //       break;
+    //     case '1':
+    //       setSelected(noticeRooms, 1);
+    //       break;
+    //     case '2':
+    //       setSelected(noticeRooms, 2);
+    //       break;
+    //     case '3':
+    //       setSelected(noticeRooms, 3);
+    //       break;
+    //   }
+    // });
+
+    noticeRooms.addEventListener('change', function (event) {
+      var roomsValue = event.target.value;
+
+      for (var i = 0; i < noticeCapacity.length; i++) {
+        noticeCapacity[i].disabled = !CAPACITY_NUMBERS[roomsValue].includes(noticeCapacity[i].value);
+      }
+    });
+
+
+    // noticeRooms.addEventListener('change', function (event) {
+    //   var roomsValue = event.target.value;
+    //   var isSelected = false;
+    //   var i = 0;
+
+    //   switch (roomsValue) {
+    //     case '1':
+    //       for (i = 0; i < noticeCapacity.length; i++) {
+    //         if (noticeCapacity[i].value === '1') {
+    //           noticeCapacity[i].disabled = false;
+    //           if (!isSelected) {
+    //             noticeCapacity[i].selected = true;
+    //             isSelected = !isSelected;
+    //           }
+    //         } else {
+    //           noticeCapacity[i].disabled = true;
+    //         }
+    //       }
+    //       break;
+    //     case '2':
+    //       for (i = 0; i < noticeCapacity.length; i++) {
+    //         if (noticeCapacity[i].value === '1' || noticeCapacity[i].value === '2') {
+    //           noticeCapacity[i].disabled = false;
+    //           if (!isSelected) {
+    //             noticeCapacity[i].selected = true;
+    //             isSelected = !isSelected;
+    //           }
+    //         } else {
+    //           noticeCapacity[i].disabled = true;
+    //         }
+    //       }
+    //       break;
+    //     case '3':
+    //       for (i = 0; i < noticeCapacity.length; i++) {
+    //         if (noticeCapacity[i].value === '1' || noticeCapacity[i].value === '2' || noticeCapacity[i].value === '3') {
+    //           noticeCapacity[i].disabled = false;
+    //           if (!isSelected) {
+    //             noticeCapacity[i].selected = true;
+    //             isSelected = !isSelected;
+    //           }
+    //         } else {
+    //           noticeCapacity[i].disabled = true;
+    //         }
+    //       }
+    //       break;
+    //     case '100':
+    //       for (i = 0; i < noticeCapacity.length; i++) {
+    //         if (noticeCapacity[i].value === '0') {
+    //           noticeCapacity[i].disabled = false;
+    //           if (!isSelected) {
+    //             noticeCapacity[i].selected = true;
+    //             isSelected = !isSelected;
+    //           }
+    //         } else {
+    //           noticeCapacity[i].disabled = true;
+    //         }
+    //       }
+    //       break;
+    //   }
+    // });
+
+    noticeForm.addEventListener('submit', function (event) {
+      if (!noticeForm.checkValidity()) {
+        checkFormValitidy(noticeForm);
+        event.preventDefault();
+      } else {
+        setTimeout(function () {
+          noticeForm.reset();
+        }, 100);
+      }
+    });
+
 
     tokioPinMap.appendChild(generatePins(ads));
     renderOfferDialog(dialog, ads[0]);
