@@ -100,7 +100,7 @@
     };
     var setSelected = function (select, value) {
       for (var i = 0; i < select.options.length; i++) {
-        if (select.options[i].value.toString(10) === value.toString(10)) {
+        if (select.options[i].value === value) {
           select.options[i].selected = true;
           break;
         }
