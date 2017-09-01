@@ -106,6 +106,17 @@
         }
       }
     };
+    var setCapacityValues = function (roomsValue) {
+      var isSelected = false;
+
+      for (var i = 0; i < noticeCapacity.length; i++) {
+        noticeCapacity[i].disabled = !CAPACITY_NUMBERS[roomsValue].includes(noticeCapacity[i].value);
+        if (!isSelected && !noticeCapacity[i].disabled) {
+          noticeCapacity[i].selected = true;
+          isSelected = !isSelected;
+        }
+      }
+    };
     var checkFormFields = function (form) {
       for (var i = 0; i < form.elements.length; i++) {
         (function (element) {
@@ -122,6 +133,7 @@
       }
     };
 
+    setCapacityValues(noticeRooms.value);
     checkFormFields(noticeForm);
 
     noticeTimein.addEventListener('change', function (event) {
@@ -165,15 +177,8 @@
 
     noticeRooms.addEventListener('change', function (event) {
       var roomsValue = event.target.value;
-      var isSelected = false;
 
-      for (var i = 0; i < noticeCapacity.length; i++) {
-        noticeCapacity[i].disabled = !CAPACITY_NUMBERS[roomsValue].includes(noticeCapacity[i].value);
-        if (!isSelected && !noticeCapacity[i].disabled) {
-          noticeCapacity[i].selected = true;
-          isSelected = !isSelected;
-        }
-      }
+      setCapacityValues(roomsValue);
     });
 
     formSubmit.addEventListener('click', function () {
