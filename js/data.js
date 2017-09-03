@@ -19,23 +19,23 @@ window.data = (function () {
   };
   var ADS_COUNT = 8;
 
-  var _getRandomFromRange = function (min, max) {
+  var getRandomFromRange = function (min, max) {
     return Math.floor(Math.random() * (max + 1 - min) + min);
   };
-  var _getRandomItem = function (array) {
-    return array[_getRandomFromRange(0, array.length - 1)];
+  var getRandomItem = function (array) {
+    return array[getRandomFromRange(0, array.length - 1)];
   };
-  var _sliceRandomItems = function (array) {
-    return array.slice(_getRandomFromRange(0, array.length - 1));
+  var sliceRandomItems = function (array) {
+    return array.slice(getRandomFromRange(0, array.length - 1));
   };
-  var _generateAdsArray = function (data, adsCount) {
+  var generateAdsArray = function (data, adsCount) {
     var arr = [];
     var offerLocationX = null;
     var offerLocationY = null;
 
     for (var i = 1; i <= adsCount; i++) {
-      offerLocationX = _getRandomFromRange(300, 900);
-      offerLocationY = _getRandomFromRange(100, 500);
+      offerLocationX = getRandomFromRange(300, 900);
+      offerLocationY = getRandomFromRange(100, 500);
 
       arr.push({
         author: {
@@ -44,13 +44,13 @@ window.data = (function () {
         offer: {
           title: data.titles[i - 1],
           address: offerLocationX + ', ' + offerLocationY,
-          price: _getRandomFromRange(1000, 1000000),
-          type: _getRandomItem(data.types),
-          rooms: _getRandomFromRange(1, 5),
-          guests: _getRandomFromRange(1, 8),
-          checkin: _getRandomItem(data.checkin),
-          checkout: _getRandomItem(data.checkout),
-          features: _sliceRandomItems(data.features),
+          price: getRandomFromRange(1000, 1000000),
+          type: getRandomItem(data.types),
+          rooms: getRandomFromRange(1, 5),
+          guests: getRandomFromRange(1, 8),
+          checkin: getRandomItem(data.checkin),
+          checkout: getRandomItem(data.checkout),
+          features: sliceRandomItems(data.features),
           description: '',
           photos: []
         },
@@ -65,6 +65,6 @@ window.data = (function () {
   };
 
   return {
-    ads: _generateAdsArray(OFFER_MOCK_DATA, ADS_COUNT)
+    ads: generateAdsArray(OFFER_MOCK_DATA, ADS_COUNT)
   };
 })();
