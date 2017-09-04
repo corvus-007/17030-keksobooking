@@ -15,21 +15,28 @@ window.form = (function () {
   var noticePrice = noticeForm.elements.price;
   var noticeRooms = noticeForm.elements.rooms;
   var noticeCapacity = noticeForm.elements.capacity;
+  var noticeAddresss = noticeForm.elements.address;
 
   var adjustTimeValue = function (adjacentElement, value) {
     adjacentElement.selectedIndex = value;
+  };
+  var checkFormElement = function (element) {
+    if (!element.checkValidity()) {
+      element.style.borderColor = 'red';
+    } else {
+      element.style = '';
+    }
   };
   var checkFormValitidy = function (form) {
     var element = null;
 
     for (var i = 0; i < form.elements.length; i++) {
       element = form.elements[i];
-      if (!element.checkValidity()) {
-        element.style.borderColor = 'red';
-      } else {
-        element.style = '';
-      }
+      checkFormElement(element);
     }
+  };
+  var setNoticeAddress = function () {
+    noticeAddresss.value = 'x: ' + window.pin.getMainPinCoords().x + 'px, y: ' + window.pin.getMainPinCoords().y + 'px';
   };
   var setSelected = function (select, value) {
     for (var i = 0; i < select.options.length; i++) {
@@ -56,15 +63,13 @@ window.form = (function () {
         element.addEventListener('input', function (event) {
           var field = event.target;
 
-          if (!field.validity.valid) {
-            field.style.borderColor = 'red';
-          } else {
-            field.style = '';
-          }
+          checkFormElement(field);
         });
       })(form.elements[i]);
     }
   };
+
+  setNoticeAddress();
 
   noticeTimein.addEventListener('change', function (event) {
     adjustTimeValue(noticeTimeout, event.target.selectedIndex);
@@ -123,4 +128,8 @@ window.form = (function () {
 
   setCapacityValues(noticeRooms.value);
   checkFormFields(noticeForm);
+
+  return {
+    setNoticeAddress: setNoticeAddress
+  };
 })();
