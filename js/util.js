@@ -6,16 +6,21 @@ window.util = (function () {
     esc: 27
   };
 
-  return {
-    isEscEvent: function (event, action) {
-      if (event.keyCode === KEYCODES.esc) {
-        action();
-      }
-    },
-    isEnterEvent: function (event, action) {
-      if (event.keyCode === KEYCODES.enter) {
-        action(event);
-      }
-    }
+  var util = {
+    isEscEvent: isEscEvent,
+    isEnterEvent: isEnterEvent
   };
+
+  function isEscEvent(event, action) {
+    if (event.keyCode === KEYCODES.esc) {
+      action();
+    }
+  }
+  function isEnterEvent(event, action) {
+    if (event.keyCode === KEYCODES.enter) {
+      action(event);
+    }
+  }
+
+  return util;
 })();
