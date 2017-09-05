@@ -4,7 +4,13 @@ window.card = (function () {
   var dialog = document.querySelector('#offer-dialog');
   var dialogClose = dialog.querySelector('.dialog__close');
 
-  var generateLodgeElement = function (ad) {
+  var card = {
+    renderOfferDialog: renderOfferDialog,
+    openDialog: openDialog,
+    closeDialog: closeDialog
+  };
+
+  function generateLodgeElement(ad) {
     var lodgeTemplate = document.querySelector('#lodge-template').content;
     var lodgeElement = lodgeTemplate.cloneNode(true);
 
@@ -19,8 +25,8 @@ window.card = (function () {
     lodgeElement.querySelector('.lodge__description').textContent = ad.offer.description;
 
     return lodgeElement;
-  };
-  var generateFeatures = function (features) {
+  }
+  function generateFeatures(features) {
     var featuresFragment = document.createDocumentFragment();
     var featuresElement = null;
 
@@ -31,8 +37,8 @@ window.card = (function () {
     }
 
     return featuresFragment;
-  };
-  var getOfferType = function (type) {
+  }
+  function getOfferType(type) {
     var offerType = null;
 
     switch (type) {
@@ -48,34 +54,33 @@ window.card = (function () {
     }
 
     return offerType;
-  };
-  var onDialogEscPress = function (event) {
+  }
+  function onDialogEscPress(event) {
     window.util.isEscEvent(event, window.card.closeDialog);
-  };
+  }
+  function renderOfferDialog(offerContainer, ad) {
+    offerContainer.replaceChild(generateLodgeElement(ad), offerContainer.querySelector('.dialog__panel'));
+    offerContainer.querySelector('.dialog__title > img').src = ad.author.avatar;
+  }
+  function openDialog() {
+    dialog.hidden = false;
+    document.addEventListener('keydown', onDialogEscPress);
+  }
+  function closeDialog() {
+    var activePin = document.querySelector('.pin--active');
+
+    if (activePin) {
+      activePin.classList.remove('pin--active');
+    }
+
+    dialog.hidden = true;
+    document.removeEventListener('keydown', onDialogEscPress);
+  }
 
   dialogClose.addEventListener('click', function (event) {
     event.preventDefault();
-    window.card.closeDialog();
+    card.closeDialog();
   });
 
-  return {
-    renderOfferDialog: function (offerContainer, ad) {
-      offerContainer.replaceChild(generateLodgeElement(ad), offerContainer.querySelector('.dialog__panel'));
-      offerContainer.querySelector('.dialog__title > img').src = ad.author.avatar;
-    },
-    openDialog: function () {
-      dialog.hidden = false;
-      document.addEventListener('keydown', onDialogEscPress);
-    },
-    closeDialog: function () {
-      var activePin = document.querySelector('.pin--active');
-
-      if (activePin) {
-        activePin.classList.remove('pin--active');
-      }
-
-      dialog.hidden = true;
-      document.removeEventListener('keydown', onDialogEscPress);
-    }
-  };
+  return card;
 })();
