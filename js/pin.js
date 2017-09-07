@@ -1,11 +1,20 @@
 'use strict';
 
 window.pin = (function () {
+  var MAIN_PIN_WIDTH = 75;
+  var MAIN_PIN_HEIGHT = 94;
   var dialog = document.querySelector('#offer-dialog');
   var tokyo = document.querySelector('.tokyo');
+
   var tokyoPinMap = document.querySelector('.tokyo__pin-map');
   var mainPin = document.querySelector('.pin__main');
   var startCoords = {};
+  var tokyoDimension = {
+    width: tokyo.clientWidth,
+    height: tokyo.clientHeight
+  };
+  var mainPinOffsetLeft = null;
+  var mainPinOffsetTop = null;
 
   var pin = {
     getMainPinCoords: getMainPinCoords
@@ -32,6 +41,7 @@ window.pin = (function () {
       targetElement = targetElement.parentNode;
     }
   }
+
   function generatePinElement(ad) {
     var pinElement = document.createElement('div');
     var pinImageElement = '<img src="' + ad.author.avatar + '" class="rounded" width="40" height="40">';
@@ -45,6 +55,7 @@ window.pin = (function () {
 
     return pinElement;
   }
+
   function generatePins(adsArray) {
     var pinsFragment = document.createDocumentFragment();
 
@@ -54,6 +65,7 @@ window.pin = (function () {
 
     return pinsFragment;
   }
+
   function onMouseMove(event) {
     var shift = {
       x: startCoords.x - event.clientX,
@@ -63,19 +75,34 @@ window.pin = (function () {
     startCoords.x = event.clientX;
     startCoords.y = event.clientY;
 
-    mainPin.style.left = (mainPin.offsetLeft - shift.x) + 'px';
-    mainPin.style.top = (mainPin.offsetTop - shift.y) + 'px';
+    if (((mainPin.offsetLeft - shift.x) + (MAIN_PIN_WIDTH / 2)) <= 0) {
+      mainPinOffsetLeft = -(MAIN_PIN_WIDTH / 2);
+    } else if (((mainPin.offsetLeft - shift.x) + MAIN_PIN_WIDTH / 2) >= tokyoDimension.width) {
+      mainPinOffsetLeft = (tokyoDimension.width - MAIN_PIN_WIDTH / 2);
+    } else {
+      mainPinOffsetLeft = (mainPin.offsetLeft - shift.x);
+    }
+
+    if ((mainPin.offsetTop - shift.y) <= 0) {
+      mainPinOffsetTop = 0;
+    } else if ((mainPin.offsetTop - shift.y + MAIN_PIN_HEIGHT) >= tokyoDimension.height) {
+      mainPinOffsetTop = (tokyoDimension.height - MAIN_PIN_HEIGHT);
+    } else {
+      mainPinOffsetTop = (mainPin.offsetTop - shift.y);
+    }
+
+    mainPin.style.left = mainPinOffsetLeft + 'px';
+    mainPin.style.top = mainPinOffsetTop + 'px';
 
     window.form.setNoticeAddress();
   }
-  function onMouseUp() {
-    tokyo.removeEventListener('mousemove', onMouseMove);
-    tokyo.removeEventListener('mouseup', onMouseUp);
-  }
-  function getMainPinCoords() {
-    var MAIN_PIN_WIDTH = 75;
-    var MAIN_PIN_HEIGHT = 94;
 
+  function onMouseUp() {
+    document.removeEventListener('mousemove', onMouseMove);
+    document.removeEventListener('mouseup', onMouseUp);
+  }
+
+  function getMainPinCoords() {
     return {
       x: mainPin.offsetLeft + MAIN_PIN_WIDTH / 2,
       y: mainPin.offsetTop + MAIN_PIN_HEIGHT
@@ -98,8 +125,10 @@ window.pin = (function () {
       t: event.clientY
     };
 
-    tokyo.addEventListener('mousemove', onMouseMove);
-    tokyo.addEventListener('mouseup', onMouseUp);
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
+
+    window.card.closeDialog();
   });
 
   return pin;
