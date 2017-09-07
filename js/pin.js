@@ -5,16 +5,12 @@ window.pin = (function () {
   var MAIN_PIN_HEIGHT = 94;
   var dialog = document.querySelector('#offer-dialog');
   var tokyo = document.querySelector('.tokyo');
-
   var tokyoPinMap = document.querySelector('.tokyo__pin-map');
   var mainPin = document.querySelector('.pin__main');
   var startCoords = {};
-  var tokyoDimension = {
-    width: tokyo.clientWidth,
-    height: tokyo.clientHeight
-  };
   var mainPinOffsetLeft = null;
   var mainPinOffsetTop = null;
+  var tokyoBounds = tokyo.getBoundingClientRect();
 
   var pin = {
     getMainPinCoords: getMainPinCoords
@@ -72,21 +68,34 @@ window.pin = (function () {
       y: startCoords.y - event.clientY
     };
 
-    startCoords.x = event.clientX;
-    startCoords.y = event.clientY;
+    if (event.clientX <= tokyoBounds.left) {
+      startCoords.x = tokyoBounds.left;
+    } else if (event.clientX >= tokyoBounds.right) {
+      startCoords.x = tokyoBounds.right;
+    } else {
+      startCoords.x = event.clientX;
+    }
+
+    if (event.clientY <= tokyoBounds.top) {
+      startCoords.y = tokyoBounds.top;
+    } else if (event.clientY >= tokyoBounds.bottom) {
+      startCoords.y = tokyoBounds.bottom;
+    } else {
+      startCoords.y = event.clientY;
+    }
 
     if (((mainPin.offsetLeft - shift.x) + (MAIN_PIN_WIDTH / 2)) <= 0) {
       mainPinOffsetLeft = -(MAIN_PIN_WIDTH / 2);
-    } else if (((mainPin.offsetLeft - shift.x) + MAIN_PIN_WIDTH / 2) >= tokyoDimension.width) {
-      mainPinOffsetLeft = (tokyoDimension.width - MAIN_PIN_WIDTH / 2);
+    } else if (((mainPin.offsetLeft - shift.x) + MAIN_PIN_WIDTH / 2) >= tokyoBounds.width) {
+      mainPinOffsetLeft = (tokyoBounds.width - MAIN_PIN_WIDTH / 2);
     } else {
       mainPinOffsetLeft = (mainPin.offsetLeft - shift.x);
     }
 
     if ((mainPin.offsetTop - shift.y) <= 0) {
       mainPinOffsetTop = 0;
-    } else if ((mainPin.offsetTop - shift.y + MAIN_PIN_HEIGHT) >= tokyoDimension.height) {
-      mainPinOffsetTop = (tokyoDimension.height - MAIN_PIN_HEIGHT);
+    } else if ((mainPin.offsetTop - shift.y + MAIN_PIN_HEIGHT) >= tokyoBounds.height) {
+      mainPinOffsetTop = (tokyoBounds.height - MAIN_PIN_HEIGHT);
     } else {
       mainPinOffsetTop = (mainPin.offsetTop - shift.y);
     }
