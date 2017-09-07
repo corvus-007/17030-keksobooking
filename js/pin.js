@@ -62,6 +62,10 @@ window.pin = (function () {
     return pinsFragment;
   }
 
+  function updateTokyoBounds() {
+    tokyoBounds = tokyo.getBoundingClientRect();
+  }
+
   function onMouseMove(event) {
     var shift = {
       x: startCoords.x - event.clientX,
@@ -138,6 +142,9 @@ window.pin = (function () {
     document.addEventListener('mouseup', onMouseUp);
 
     window.card.closeDialog();
+  });
+  window.addEventListener('scroll', function () {
+    updateTokyoBounds();
   });
 
   return pin;
