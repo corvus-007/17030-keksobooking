@@ -66,27 +66,42 @@ window.pin = (function () {
     tokyoBounds = tokyo.getBoundingClientRect();
   }
 
+  function getStartX(mouseX, element) {
+    var startX = null;
+
+    if (mouseX <= element.left) {
+      startX = element.left;
+    } else if (mouseX >= element.right) {
+      startX = element.right;
+    } else {
+      startX = mouseX;
+    }
+
+    return startX;
+  }
+
+  function getStartY(mouseY, element) {
+    var startY = null;
+
+    if (mouseY <= element.top) {
+      startY = element.top;
+    } else if (mouseY >= element.bottom) {
+      startY = element.bottom;
+    } else {
+      startY = mouseY;
+    }
+
+    return startY;
+  }
+
   function onMouseMove(event) {
     var shift = {
       x: startCoords.x - event.clientX,
       y: startCoords.y - event.clientY
     };
 
-    if (event.clientX <= tokyoBounds.left) {
-      startCoords.x = tokyoBounds.left;
-    } else if (event.clientX >= tokyoBounds.right) {
-      startCoords.x = tokyoBounds.right;
-    } else {
-      startCoords.x = event.clientX;
-    }
-
-    if (event.clientY <= tokyoBounds.top) {
-      startCoords.y = tokyoBounds.top;
-    } else if (event.clientY >= tokyoBounds.bottom) {
-      startCoords.y = tokyoBounds.bottom;
-    } else {
-      startCoords.y = event.clientY;
-    }
+    startCoords.x = getStartX(event.clientX, tokyoBounds);
+    startCoords.y = getStartY(event.clientY, tokyoBounds);
 
     if (((mainPin.offsetLeft - shift.x) + (MAIN_PIN_WIDTH / 2)) <= 0) {
       mainPinOffsetLeft = -(MAIN_PIN_WIDTH / 2);
