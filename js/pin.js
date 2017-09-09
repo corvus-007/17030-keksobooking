@@ -66,13 +66,13 @@ window.pin = (function () {
     tokyoBounds = tokyo.getBoundingClientRect();
   }
 
-  function getStartX(mouseX, element) {
+  function getStartX(mouseX) {
     var startX = null;
 
-    if (mouseX <= element.left) {
-      startX = element.left;
-    } else if (mouseX >= element.right) {
-      startX = element.right;
+    if (mouseX <= tokyoBounds.left) {
+      startX = tokyoBounds.left;
+    } else if (mouseX >= tokyoBounds.right) {
+      startX = tokyoBounds.right;
     } else {
       startX = mouseX;
     }
@@ -80,13 +80,13 @@ window.pin = (function () {
     return startX;
   }
 
-  function getStartY(mouseY, element) {
+  function getStartY(mouseY) {
     var startY = null;
 
-    if (mouseY <= element.top) {
-      startY = element.top;
-    } else if (mouseY >= element.bottom) {
-      startY = element.bottom;
+    if (mouseY <= tokyoBounds.top) {
+      startY = tokyoBounds.top;
+    } else if (mouseY >= tokyoBounds.bottom) {
+      startY = tokyoBounds.bottom;
     } else {
       startY = mouseY;
     }
