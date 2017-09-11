@@ -1,12 +1,9 @@
 'use strict';
 
 window.form = (function () {
-  var CAPACITY_NUMBERS = {
-    1: ['1'],
-    2: ['1', '2'],
-    3: ['1', '2', '3'],
-    100: ['0']
-  };
+  var CAPACITY_NUMBERS = ['1', ['1', '2'],
+    ['1', '2', '3'], '0'
+  ];
   var noticeForm = document.querySelector('.notice__form');
   var formSubmit = noticeForm.querySelector('.form__submit');
   var noticeTimein = noticeForm.elements.timein;
@@ -21,10 +18,6 @@ window.form = (function () {
     setNoticeAddress: setNoticeAddress
   };
 
-  function adjustTimeValue(adjacentElement, value) {
-    adjacentElement.selectedIndex = value;
-  }
-
   function checkFormElement(element) {
     if (!element.checkValidity()) {
       element.style.borderColor = 'red';
@@ -34,30 +27,16 @@ window.form = (function () {
   }
 
   function checkFormValitidy(formElement) {
-    var element = null;
-
-    for (var i = 0; i < formElement.elements.length; i++) {
-      element = formElement.elements[i];
-      checkFormElement(element);
-    }
+    Array.from(formElement.elements).forEach(checkFormElement);
   }
 
-  function setSelected(select, value) {
-    for (var i = 0; i < select.options.length; i++) {
-      if (select.options[i].value === value) {
-        select.options[i].selected = true;
-        break;
-      }
-    }
-  }
-
-  function setCapacityValues(roomsValue) {
+  function syncCapacityValues(element, value) {
     var isSelected = false;
 
-    for (var i = 0; i < noticeCapacity.length; i++) {
-      noticeCapacity[i].disabled = !CAPACITY_NUMBERS[roomsValue].includes(noticeCapacity[i].value);
-      if (!isSelected && !noticeCapacity[i].disabled) {
-        noticeCapacity[i].selected = true;
+    for (var i = 0; i < element.length; i++) {
+      element[i].disabled = !value.includes(element[i].value);
+      if (!isSelected && !element[i].disabled) {
+        element[i].selected = true;
         isSelected = !isSelected;
       }
     }
@@ -67,47 +46,25 @@ window.form = (function () {
     noticeAddresss.value = 'x: ' + window.pin.getMainPinCoords().x + 'px, y: ' + window.pin.getMainPinCoords().y + 'px';
   }
 
-  noticeTimein.addEventListener('change', function (event) {
-    adjustTimeValue(noticeTimeout, event.target.selectedIndex);
-  });
-  noticeTimeout.addEventListener('change', function (event) {
-    adjustTimeValue(noticeTimein, event.target.selectedIndex);
-  });
-  noticeType.addEventListener('change', function (event) {
-    var selectedValue = event.target.value;
+  function syncValues(element, value) {
+    element.value = value;
+  }
 
-    switch (selectedValue) {
-      case 'bungalo':
-        noticePrice.value = 0;
-        break;
-      case 'flat':
-        noticePrice.value = 1000;
-        break;
-      case 'house':
-        noticePrice.value = 5000;
-        break;
-      case 'palace':
-        noticePrice.value = 10000;
-        break;
-    }
-  });
-  noticePrice.addEventListener('input', function () {
-    var priceValue = event.target.value;
+  function syncValueWithMin(element, value) {
+    element.min = value;
+  }
 
-    if (priceValue >= 10000) {
-      setSelected(noticeType, 'palace');
-    } else if (priceValue >= 5000) {
-      setSelected(noticeType, 'house');
-    } else if (priceValue >= 1000) {
-      setSelected(noticeType, 'flat');
-    } else if (priceValue >= 0) {
-      setSelected(noticeType, 'bungalo');
-    }
+  noticeTimein.addEventListener('change', function () {
+    window.synchronizeFields(noticeTimein, noticeTimeout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues);
   });
-  noticeRooms.addEventListener('change', function (event) {
-    var roomsValue = event.target.value;
-
-    setCapacityValues(roomsValue);
+  noticeTimeout.addEventListener('change', function () {
+    window.synchronizeFields(noticeTimeout, noticeTimein, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues);
+  });
+  noticeType.addEventListener('change', function () {
+    window.synchronizeFields(noticeType, noticePrice, ['bungalo', 'flat', 'house', 'palace'], [0, 1000, 5000, 10000], syncValueWithMin);
+  });
+  noticeRooms.addEventListener('change', function () {
+    window.synchronizeFields(noticeRooms, noticeCapacity, ['1', '2', '3', '100'], CAPACITY_NUMBERS, syncCapacityValues);
   });
   formSubmit.addEventListener('click', function () {
     if (!noticeForm.checkValidity()) {
@@ -119,7 +76,8 @@ window.form = (function () {
     }
   });
 
-  setCapacityValues(noticeRooms.value);
+  window.synchronizeFields(noticeRooms, noticeCapacity, ['1', '2', '3', '100'], CAPACITY_NUMBERS, syncCapacityValues);
+
   form.setNoticeAddress();
   Array.from(noticeForm.elements).forEach(function (element) {
     element.addEventListener('input', function () {
