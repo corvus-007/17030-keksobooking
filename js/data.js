@@ -19,16 +19,20 @@ window.data = (function () {
   };
   var ADS_COUNT = 8;
 
-  var getRandomFromRange = function (min, max) {
+  var data = {
+    ads: generateAdsArray(OFFER_MOCK_DATA, ADS_COUNT)
+  };
+
+  function getRandomFromRange(min, max) {
     return Math.floor(Math.random() * (max + 1 - min) + min);
-  };
-  var getRandomItem = function (array) {
+  }
+  function getRandomItem(array) {
     return array[getRandomFromRange(0, array.length - 1)];
-  };
-  var sliceRandomItems = function (array) {
+  }
+  function sliceRandomItems(array) {
     return array.slice(getRandomFromRange(0, array.length - 1));
-  };
-  var generateAdsArray = function (data, adsCount) {
+  }
+  function generateAdsArray(adsData, adsCount) {
     var arr = [];
     var offerLocationX = null;
     var offerLocationY = null;
@@ -42,15 +46,15 @@ window.data = (function () {
           avatar: 'img/avatars/user0' + i + '.png'
         },
         offer: {
-          title: data.titles[i - 1],
+          title: adsData.titles[i - 1],
           address: offerLocationX + ', ' + offerLocationY,
           price: getRandomFromRange(1000, 1000000),
-          type: getRandomItem(data.types),
+          type: getRandomItem(adsData.types),
           rooms: getRandomFromRange(1, 5),
           guests: getRandomFromRange(1, 8),
-          checkin: getRandomItem(data.checkin),
-          checkout: getRandomItem(data.checkout),
-          features: sliceRandomItems(data.features),
+          checkin: getRandomItem(adsData.checkin),
+          checkout: getRandomItem(adsData.checkout),
+          features: sliceRandomItems(adsData.features),
           description: '',
           photos: []
         },
@@ -62,9 +66,7 @@ window.data = (function () {
     }
 
     return arr;
-  };
+  }
 
-  return {
-    ads: generateAdsArray(OFFER_MOCK_DATA, ADS_COUNT)
-  };
+  return data;
 })();
