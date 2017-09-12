@@ -26,6 +26,7 @@ window.card = (function () {
 
     return lodgeElement;
   }
+
   function generateFeatures(features) {
     var featuresFragment = document.createDocumentFragment();
     var featuresElement = null;
@@ -38,6 +39,7 @@ window.card = (function () {
 
     return featuresFragment;
   }
+
   function getOfferType(type) {
     var offerType = null;
 
@@ -55,17 +57,21 @@ window.card = (function () {
 
     return offerType;
   }
+
   function onDialogEscPress(event) {
     window.util.isEscEvent(event, window.card.closeDialog);
   }
+
   function renderOfferDialog(offerContainer, ad) {
     offerContainer.replaceChild(generateLodgeElement(ad), offerContainer.querySelector('.dialog__panel'));
     offerContainer.querySelector('.dialog__title > img').src = ad.author.avatar;
   }
+
   function openDialog() {
     dialog.hidden = false;
     document.addEventListener('keydown', onDialogEscPress);
   }
+
   function closeDialog() {
     var activePin = document.querySelector('.pin--active');
 
