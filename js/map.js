@@ -3,5 +3,7 @@
 window.map = (function () {
   var dialog = document.querySelector('#offer-dialog');
 
-  window.card.renderOfferDialog(dialog, window.data.ads[0]);
+  window.backend.load(function (response) {
+    window.card.renderOfferDialog(dialog, response[0]);
+  }, window.util.errorHandler);
 })();

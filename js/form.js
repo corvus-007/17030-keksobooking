@@ -54,6 +54,11 @@ window.form = (function () {
     element.min = value;
   }
 
+  function setDefaultFields() {
+    window.synchronizeFields(noticeRooms, noticeCapacity, ['1', '2', '3', '100'], CAPACITY_NUMBERS, syncCapacityValues);
+    form.setNoticeAddress();
+  }
+
   noticeTimein.addEventListener('change', function () {
     window.synchronizeFields(noticeTimein, noticeTimeout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues);
   });
@@ -69,20 +74,23 @@ window.form = (function () {
   formSubmit.addEventListener('click', function () {
     if (!noticeForm.checkValidity()) {
       checkFormValitidy(noticeForm);
-    } else {
-      setTimeout(function () {
-        noticeForm.reset();
-      }, 100);
     }
   });
 
-  window.synchronizeFields(noticeRooms, noticeCapacity, ['1', '2', '3', '100'], CAPACITY_NUMBERS, syncCapacityValues);
+  setDefaultFields();
 
-  form.setNoticeAddress();
   Array.from(noticeForm.elements).forEach(function (element) {
     element.addEventListener('input', function () {
       checkFormElement(element);
     });
+  });
+
+  noticeForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    window.backend.save(new FormData(noticeForm), function () {
+      noticeForm.reset();
+      setDefaultFields();
+    }, window.util.errorHandler);
   });
 
   return form;

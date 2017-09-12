@@ -23,15 +23,17 @@ window.pin = (function () {
       if (targetElement.classList.contains('pin')) {
         var pins = tokyoPinMap.querySelectorAll('.pin:not(.pin__main)');
 
-        for (var i = 0; i < pins.length; i++) {
-          pins[i].classList.remove('pin--active');
+        pins.forEach(function (it, index) {
+          it.classList.remove('pin--active');
 
-          if (pins[i] === targetElement) {
+          if (it === targetElement) {
             targetElement.classList.add('pin--active');
-            window.card.renderOfferDialog(dialog, window.data.ads[i]);
-            window.card.openDialog();
+            window.backend.load(function (response) {
+              window.card.renderOfferDialog(dialog, response[index]);
+              window.card.openDialog();
+            }, window.util.errorHandler);
           }
-        }
+        });
         return;
       }
       targetElement = targetElement.parentNode;
@@ -137,7 +139,9 @@ window.pin = (function () {
     };
   }
 
-  tokyoPinMap.insertBefore(generatePins(window.data.ads), mainPin);
+  window.backend.load(function (response) {
+    tokyoPinMap.insertBefore(generatePins(response), mainPin);
+  }, window.util.errorHandler);
 
   tokyoPinMap.addEventListener('click', function (event) {
     toggleActivePin(event);
