@@ -12,12 +12,13 @@ window.map = (function () {
   var mainPinOffsetTop = null;
 
   var map = {
+    tokyoPinMap: tokyoPinMap,
     getMainPinCoords: getMainPinCoords
   };
 
   function selectFirstPin() {
     var firstPinEvent = {
-      target: tokyoPinMap.querySelector('.pin:not(.pin__main)')
+      target: map.tokyoPinMap.querySelector('.pin:not(.pin__main)')
     };
 
     window.pin.toggleActivePin(firstPinEvent);
@@ -118,7 +119,7 @@ window.map = (function () {
 
   window.backend.load(function (response) {
     window.data.ads = response;
-    tokyoPinMap.insertBefore(window.pin.createPins(window.data.ads), mainPin);
+    map.tokyoPinMap.insertBefore(window.pin.createPins(window.data.ads), mainPin);
     selectFirstPin();
   }, window.util.errorHandler);
 

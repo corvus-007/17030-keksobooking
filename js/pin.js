@@ -1,8 +1,7 @@
 'use strict';
 
 window.pin = (function () {
-  var dialog = document.querySelector('#offer-dialog');
-  var tokyoPinMap = document.querySelector('.tokyo__pin-map');
+  var tokyoPinMap = window.map.tokyoPinMap;
 
   var pin = {
     toggleActivePin: toggleActivePin,
@@ -21,7 +20,7 @@ window.pin = (function () {
 
           if (pinItem === targetElement) {
             targetElement.classList.add('pin--active');
-            window.card.renderOfferDialog(dialog, window.data.ads[index]);
+            window.card.renderOfferDialog(window.card.dialog, window.data.ads[index]);
             window.card.openDialog();
           }
         });

@@ -5,6 +5,7 @@ window.card = (function () {
   var dialogClose = dialog.querySelector('.dialog__close');
 
   var card = {
+    dialog: dialog,
     renderOfferDialog: renderOfferDialog,
     openDialog: openDialog,
     closeDialog: closeDialog
@@ -68,7 +69,7 @@ window.card = (function () {
   }
 
   function openDialog() {
-    dialog.hidden = false;
+    card.dialog.hidden = false;
     document.addEventListener('keydown', onDialogEscPress);
   }
 
@@ -79,7 +80,7 @@ window.card = (function () {
       activePin.classList.remove('pin--active');
     }
 
-    dialog.hidden = true;
+    card.dialog.hidden = true;
     document.removeEventListener('keydown', onDialogEscPress);
   }
 
