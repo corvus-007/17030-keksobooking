@@ -43,7 +43,7 @@ window.form = (function () {
   }
 
   function setNoticeAddress() {
-    noticeAddresss.value = 'x: ' + window.pin.getMainPinCoords().x + 'px, y: ' + window.pin.getMainPinCoords().y + 'px';
+    noticeAddresss.value = 'x: ' + window.map.getMainPinCoords().x + 'px, y: ' + window.map.getMainPinCoords().y + 'px';
   }
 
   function syncValues(element, value) {
@@ -52,6 +52,11 @@ window.form = (function () {
 
   function syncValueWithMin(element, value) {
     element.min = value;
+  }
+
+  function setDefaultFields() {
+    window.synchronizeFields(noticeRooms, noticeCapacity, ['1', '2', '3', '100'], CAPACITY_NUMBERS, syncCapacityValues);
+    form.setNoticeAddress();
   }
 
   noticeTimein.addEventListener('change', function () {
@@ -69,20 +74,23 @@ window.form = (function () {
   formSubmit.addEventListener('click', function () {
     if (!noticeForm.checkValidity()) {
       checkFormValitidy(noticeForm);
-    } else {
-      setTimeout(function () {
-        noticeForm.reset();
-      }, 100);
     }
   });
 
-  window.synchronizeFields(noticeRooms, noticeCapacity, ['1', '2', '3', '100'], CAPACITY_NUMBERS, syncCapacityValues);
+  setDefaultFields();
 
-  form.setNoticeAddress();
   Array.from(noticeForm.elements).forEach(function (element) {
     element.addEventListener('input', function () {
       checkFormElement(element);
     });
+  });
+
+  noticeForm.addEventListener('submit', function (event) {
+    event.preventDefault();
+    window.backend.save(new FormData(noticeForm), function () {
+      noticeForm.reset();
+      setDefaultFields();
+    }, window.util.errorHandler);
   });
 
   return form;
