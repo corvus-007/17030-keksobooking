@@ -43,7 +43,7 @@ window.form = (function () {
   }
 
   function setNoticeAddress() {
-    noticeAddresss.value = 'x: ' + window.pin.getMainPinCoords().x + 'px, y: ' + window.pin.getMainPinCoords().y + 'px';
+    noticeAddresss.value = 'x: ' + window.map.getMainPinCoords().x + 'px, y: ' + window.map.getMainPinCoords().y + 'px';
   }
 
   function syncValues(element, value) {
