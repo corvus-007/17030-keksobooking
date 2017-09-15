@@ -5,11 +5,12 @@ window.util = (function () {
     enter: 13,
     esc: 27
   };
-
+  var DEBOUNCE_INTERVAL = 500;
   var util = {
     isEscEvent: isEscEvent,
     isEnterEvent: isEnterEvent,
-    errorHandler: errorHandler
+    errorHandler: errorHandler,
+    debounce: debounce
   };
 
   function isEscEvent(event, action) {
@@ -22,6 +23,17 @@ window.util = (function () {
     if (event.keyCode === KEYCODES.enter) {
       action(event);
     }
+  }
+
+  function debounce(func) {
+    var lastTimeout;
+    return function () {
+      if (lastTimeout) {
+        window.clearTimeout(lastTimeout);
+      }
+      lastTimeout = window.setTimeout(func, DEBOUNCE_INTERVAL);
+      return lastTimeout;
+    };
   }
 
   function errorHandler(errorMessage) {
