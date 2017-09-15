@@ -70,7 +70,7 @@ window.pin = (function () {
 
   var fnFilters = [isTypeMatch, isRoomsMatch, isGuestsMatch, isPricesMatch, isFeaturesMatch];
 
-  tokyoFilters.addEventListener('change', function () {
+  function onTokyoFiltersChange() {
     filteredPins = window.data.ads.filter(function (ad) {
       return fnFilters.every(function (fn) {
         return fn(ad);
@@ -78,7 +78,9 @@ window.pin = (function () {
     });
 
     refreshPins();
-  });
+  }
+
+  tokyoFilters.addEventListener('change', onTokyoFiltersChange);
 
   var pin = {
     toggleActivePin: toggleActivePin,
