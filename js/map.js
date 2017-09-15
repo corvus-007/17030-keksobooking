@@ -13,15 +13,15 @@ window.map = (function () {
 
   var map = {
     tokyoPinMap: tokyoPinMap,
-    getMainPinCoords: getMainPinCoords
+    mainPin: mainPin,
+    getMainPinCoords: getMainPinCoords,
+    selectFirstPin: selectFirstPin
   };
 
-  function selectFirstPin() {
-    var firstPinEvent = {
-      target: map.tokyoPinMap.querySelector('.pin:not(.pin__main)')
-    };
+  function selectFirstPin(array) {
+    var firstPin = map.tokyoPinMap.querySelector('.pin:not(.pin__main)');
 
-    window.pin.toggleActivePin(firstPinEvent);
+    window.pin.toggleActivePin(firstPin, array);
   }
 
   function updateTokyoBounds() {
@@ -116,12 +116,6 @@ window.map = (function () {
 
     window.card.closeDialog();
   });
-
-  window.backend.load(function (response) {
-    window.data.ads = response;
-    map.tokyoPinMap.insertBefore(window.pin.createPins(window.data.ads), mainPin);
-    selectFirstPin();
-  }, window.util.errorHandler);
 
   return map;
 })();
