@@ -62,15 +62,19 @@ window.form = (function () {
   noticeTimein.addEventListener('change', function () {
     window.synchronizeFields(noticeTimein, noticeTimeout, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues);
   });
+
   noticeTimeout.addEventListener('change', function () {
     window.synchronizeFields(noticeTimeout, noticeTimein, ['12:00', '13:00', '14:00'], ['12:00', '13:00', '14:00'], syncValues);
   });
+
   noticeType.addEventListener('change', function () {
     window.synchronizeFields(noticeType, noticePrice, ['bungalo', 'flat', 'house', 'palace'], [0, 1000, 5000, 10000], syncValueWithMin);
   });
+
   noticeRooms.addEventListener('change', function () {
     window.synchronizeFields(noticeRooms, noticeCapacity, ['1', '2', '3', '100'], CAPACITY_NUMBERS, syncCapacityValues);
   });
+
   formSubmit.addEventListener('click', function () {
     if (!noticeForm.checkValidity()) {
       checkFormValitidy(noticeForm);
