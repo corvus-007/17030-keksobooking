@@ -2,7 +2,7 @@
 
 window.showCard = (function () {
   return function (card, pin) {
-    window.card.renderOfferDialog(card, pin);
-    window.card.openDialog();
+    window.card.render(card, pin);
+    window.card.open();
   };
 })();

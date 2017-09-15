@@ -1,29 +1,15 @@
 'use strict';
 
 window.util = (function () {
-  var KEYCODES = {
-    enter: 13,
-    esc: 27
-  };
   var DEBOUNCE_INTERVAL = 500;
   var util = {
-    isEscEvent: isEscEvent,
-    isEnterEvent: isEnterEvent,
+    KEYCODES: {
+      enter: 13,
+      esc: 27
+    },
     errorHandler: errorHandler,
     debounce: debounce
   };
-
-  function isEscEvent(event, action) {
-    if (event.keyCode === KEYCODES.esc) {
-      action();
-    }
-  }
-
-  function isEnterEvent(event, action) {
-    if (event.keyCode === KEYCODES.enter) {
-      action(event);
-    }
-  }
 
   function debounce(func) {
     var lastTimeout;
