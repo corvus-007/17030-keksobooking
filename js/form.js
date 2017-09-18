@@ -19,11 +19,7 @@ window.form = (function () {
   };
 
   function checkFormElement(element) {
-    if (!element.checkValidity()) {
-      element.style.borderColor = 'red';
-    } else {
-      element.style = '';
-    }
+    element.style.borderColor = element.checkValidity() ? '' : 'red';
   }
 
   function checkFormValitidy(formElement) {
