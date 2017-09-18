@@ -15,14 +15,7 @@ window.map = (function () {
     tokyoPinMap: tokyoPinMap,
     mainPin: mainPin,
     getMainPinCoords: getMainPinCoords,
-    selectFirstPin: selectFirstPin
   };
-
-  function selectFirstPin(array) {
-    var firstPin = map.tokyoPinMap.querySelector('.pin:not(.pin__main)');
-
-    window.pin.toggleActivePin(firstPin, array);
-  }
 
   function updateTokyoBounds() {
     tokyoBounds = tokyo.getBoundingClientRect();
@@ -114,7 +107,7 @@ window.map = (function () {
     document.addEventListener('mousemove', onMouseMove);
     document.addEventListener('mouseup', onMouseUp);
 
-    window.card.closeDialog();
+    window.card.close();
   });
 
   return map;

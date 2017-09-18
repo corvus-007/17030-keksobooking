@@ -3,16 +3,16 @@
 window.card = (function () {
   var dialog = document.querySelector('#offer-dialog');
   var dialogClose = dialog.querySelector('.dialog__close');
+  var lodgeTemplate = document.querySelector('#lodge-template').content;
 
   var card = {
     dialog: dialog,
-    renderOfferDialog: renderOfferDialog,
-    openDialog: openDialog,
-    closeDialog: closeDialog
+    render: renderOfferDialog,
+    open: openDialog,
+    close: closeDialog
   };
 
   function generateLodgeElement(ad) {
-    var lodgeTemplate = document.querySelector('#lodge-template').content;
     var lodgeElement = lodgeTemplate.cloneNode(true);
 
     lodgeElement.querySelector('.lodge__title').textContent = ad.offer.title;
@@ -60,7 +60,9 @@ window.card = (function () {
   }
 
   function onDialogEscPress(event) {
-    window.util.isEscEvent(event, window.card.closeDialog);
+    if (event.keyCode === window.util.KEYCODES.ESC) {
+      card.close();
+    }
   }
 
   function renderOfferDialog(offerContainer, ad) {
@@ -86,7 +88,7 @@ window.card = (function () {
 
   dialogClose.addEventListener('click', function (event) {
     event.preventDefault();
-    card.closeDialog();
+    card.close();
   });
 
   return card;

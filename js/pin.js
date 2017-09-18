@@ -2,17 +2,17 @@
 
 window.pin = (function () {
   var PRICE_RANGE = {
-    'low': {
-      'min': 0,
-      'max': 10000
+    low: {
+      min: 0,
+      max: 10000
     },
-    'middle': {
-      'min': 10000,
-      'max': 50000
+    middle: {
+      min: 10000,
+      max: 50000
     },
-    'high': {
-      'min': 50000,
-      'max': Infinity
+    high: {
+      min: 50000,
+      max: Infinity
     }
   };
   var tokyoPinMap = window.map.tokyoPinMap;
@@ -26,20 +26,14 @@ window.pin = (function () {
 
   function updatePins(adverts) {
     var oldPins = tokyoPinMap.querySelectorAll('.pin:not(.pin__main)');
-    var pins = window.pin.createPins(adverts);
+    var pins = createPins(adverts);
 
     Array.from(oldPins).forEach(function (pin) {
       pin.remove();
     });
 
-    if (adverts.length === 0) {
-      window.card.closeDialog();
-      return;
-    }
-
     window.map.tokyoPinMap.insertBefore(pins, window.map.mainPin);
-    window.map.selectFirstPin(adverts);
-    window.card.renderOfferDialog(window.card.dialog, adverts[0]);
+    window.card.close();
   }
 
   var refreshPins = window.util.debounce(function () {
@@ -82,30 +76,30 @@ window.pin = (function () {
 
   tokyoFilters.addEventListener('change', onTokyoFiltersChange);
 
-  var pin = {
-    toggleActivePin: toggleActivePin,
-    createPins: createPins
-  };
+  function toggleActivePin(event, data) {
+    var clickedPin = event.target;
+    var activePin = tokyoPinMap.querySelector('.pin--active');
+    var pins = tokyoPinMap.querySelectorAll('.pin');
 
-  function toggleActivePin(clickedPin, data) {
     if (!clickedPin) {
-      window.card.closeDialog();
+      window.card.close();
       return;
     }
 
     while (clickedPin !== tokyoPinMap) {
+      if (clickedPin.classList.contains('pin__main')) {
+        return;
+      }
+
       if (clickedPin.classList.contains('pin')) {
-        var pins = tokyoPinMap.querySelectorAll('.pin:not(.pin__main)');
+        var clickedPinIndex = Array.from(pins).indexOf(clickedPin);
 
-        Array.from(pins).forEach(function (pinItem, index) {
-          pinItem.classList.remove('pin--active');
+        if (activePin) {
+          activePin.classList.remove('pin--active');
+        }
 
-          if (pinItem === clickedPin) {
-            clickedPin.classList.add('pin--active');
-            window.card.renderOfferDialog(window.card.dialog, data[index]);
-            window.card.openDialog();
-          }
-        });
+        clickedPin.classList.add('pin--active');
+        window.showCard(window.card.dialog, data[clickedPinIndex]);
         return;
       }
       clickedPin = clickedPin.parentNode;
@@ -137,11 +131,13 @@ window.pin = (function () {
   }
 
   tokyoPinMap.addEventListener('click', function (event) {
-    var targetElement = event.target;
-    pin.toggleActivePin(targetElement, filteredPins);
+    toggleActivePin(event, filteredPins);
   });
+
   tokyoPinMap.addEventListener('keydown', function (event) {
-    window.util.isEnterEvent(event, toggleActivePin.bind(event));
+    if (event.keyCode === window.util.KEYCODES.ENTER) {
+      toggleActivePin(event, filteredPins);
+    }
   });
 
   window.backend.load(function (response) {
@@ -150,5 +146,4 @@ window.pin = (function () {
     updatePins(filteredPins);
   }, window.util.errorHandler);
 
-  return pin;
 })();
