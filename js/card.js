@@ -3,6 +3,7 @@
 window.card = (function () {
   var dialog = document.querySelector('#offer-dialog');
   var dialogClose = dialog.querySelector('.dialog__close');
+  var lodgeTemplate = document.querySelector('#lodge-template').content;
 
   var card = {
     dialog: dialog,
@@ -12,7 +13,6 @@ window.card = (function () {
   };
 
   function generateLodgeElement(ad) {
-    var lodgeTemplate = document.querySelector('#lodge-template').content;
     var lodgeElement = lodgeTemplate.cloneNode(true);
 
     lodgeElement.querySelector('.lodge__title').textContent = ad.offer.title;
