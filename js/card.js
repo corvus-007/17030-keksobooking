@@ -60,7 +60,7 @@ window.card = (function () {
   }
 
   function onDialogEscPress(event) {
-    if (event.keyCode === window.util.KEYCODES.esc) {
+    if (event.keyCode === window.util.KEYCODES.ESC) {
       card.close();
     }
   }

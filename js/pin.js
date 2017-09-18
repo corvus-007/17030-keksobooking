@@ -129,7 +129,7 @@ window.pin = (function () {
   });
 
   tokyoPinMap.addEventListener('keydown', function (event) {
-    if (event.keyCode === window.util.KEYCODES.enter) {
+    if (event.keyCode === window.util.KEYCODES.ENTER) {
       toggleActivePin(event, filteredPins);
     }
   });

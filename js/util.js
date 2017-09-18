@@ -4,8 +4,8 @@ window.util = (function () {
   var DEBOUNCE_INTERVAL = 500;
   var util = {
     KEYCODES: {
-      enter: 13,
-      esc: 27
+      ENTER: 13,
+      ESC: 27
     },
     errorHandler: errorHandler,
     debounce: debounce
