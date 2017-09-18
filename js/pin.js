@@ -79,7 +79,7 @@ window.pin = (function () {
   function toggleActivePin(event, data) {
     var clickedPin = event.target;
     var activePin = tokyoPinMap.querySelector('.pin--active');
-    var pins = tokyoPinMap.querySelectorAll('.pin:not(.pin__main)');
+    var pins = tokyoPinMap.querySelectorAll('.pin');
 
     if (!clickedPin) {
       window.card.close();
@@ -87,11 +87,17 @@ window.pin = (function () {
     }
 
     while (clickedPin !== tokyoPinMap) {
+      if (clickedPin.classList.contains('pin__main')) {
+        return;
+      }
+
       if (clickedPin.classList.contains('pin')) {
         var clickedPinIndex = Array.from(pins).indexOf(clickedPin);
+
         if (activePin) {
           activePin.classList.remove('pin--active');
         }
+
         clickedPin.classList.add('pin--active');
         window.showCard(window.card.dialog, data[clickedPinIndex]);
         return;
