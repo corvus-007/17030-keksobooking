@@ -2,15 +2,15 @@
 
 window.pin = (function () {
   var PRICE_RANGE = {
-    low: {
+    LOW: {
       min: 0,
       max: 10000
     },
-    middle: {
+    MIDDLE: {
       min: 10000,
       max: 50000
     },
-    high: {
+    HIGH: {
       min: 50000,
       max: Infinity
     }
@@ -53,7 +53,7 @@ window.pin = (function () {
   }
 
   function isPricesMatch(ad) {
-    return priceField.value === 'any' ? true : (PRICE_RANGE[priceField.value].min < ad.offer.price && PRICE_RANGE[priceField.value].max > ad.offer.price);
+    return priceField.value === 'any' ? true : (PRICE_RANGE[priceField.value.toUpperCase()].min < ad.offer.price && PRICE_RANGE[priceField.value.toUpperCase()].max > ad.offer.price);
   }
 
   function isFeaturesMatch(ad) {
